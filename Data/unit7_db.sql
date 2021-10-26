@@ -1,56 +1,28 @@
-﻿CREATE TABLE "Credit Card" (
-    "card" varchar(20)   NOT NULL,
-    "cardholder_id" int   NOT NULL,
-    CONSTRAINT "pk_Credit Card" PRIMARY KEY (
-        "card"
-     )
+﻿CREATE TABLE card_holder (
+    "id" int   NOT NULL PRIMARY KEY,
+    "name" varchar(100)   NOT NULL
 );
 
-CREATE TABLE "Card Holder" (
-    "id" int   NOT NULL,
+CREATE TABLE "credit_card" (
+    "card" varchar(20)   NOT NULL PRIMARY KEY,
+    "cardholder_id" int   NOT NULL REFERENCES card_holder
+);
+
+CREATE TABLE merchant_category (
+    "id" int   NOT NULL PRIMARY KEY,
+    "name" varchar(12)   NOT NULL
+);
+
+CREATE TABLE merchant (
+    "id" int   NOT NULL PRIMARY KEY,
     "name" varchar(100)   NOT NULL,
-    CONSTRAINT "pk_Card Holder" PRIMARY KEY (
-        "id"
-     )
+    "id_merchant_category" int   NOT NULL REFERENCES merchant_category
 );
 
-CREATE TABLE "Merchant" (
-    "id" int   NOT NULL,
-    "name" varchar(100)   NOT NULL,
-    "id_merchant_category" int   NOT NULL,
-    CONSTRAINT "pk_Merchant" PRIMARY KEY (
-        "id"
-     )
-);
-
-CREATE TABLE "Merchant Category" (
-    "id" int   NOT NULL,
-    "name" varchar(12)   NOT NULL,
-    CONSTRAINT "pk_Merchant Category" PRIMARY KEY (
-        "id"
-     )
-);
-
-CREATE TABLE "Transaction" (
-    "id" int   NOT NULL,
+CREATE TABLE "transaction" (
+    "id" int   NOT NULL PRIMARY KEY,
     "date" TIMESTAMP   NOT NULL,
     "amount" MONEY   NOT NULL,
-    "card" varchar(20)   NOT NULL,
-    "id_merchant" int   NOT NULL,
-    CONSTRAINT "pk_Transaction" PRIMARY KEY (
-        "id"
-     )
+    "card" varchar(20)   NOT NULL REFERENCES credit_card,
+    "id_merchant" int   NOT NULL REFERENCES merchant
 );
-
-ALTER TABLE "Credit Card" ADD CONSTRAINT "fk_Credit Card_card" FOREIGN KEY("card")
-REFERENCES "Transaction" ("card");
-
-ALTER TABLE "Card Holder" ADD CONSTRAINT "fk_Card Holder_id" FOREIGN KEY("id")
-REFERENCES "Credit Card" ("cardholder_id");
-
-ALTER TABLE "Merchant" ADD CONSTRAINT "fk_Merchant_id" FOREIGN KEY("id")
-REFERENCES "Transaction" ("id_merchant");
-
-ALTER TABLE "Merchant Category" ADD CONSTRAINT "fk_Merchant Category_id" FOREIGN KEY("id")
-REFERENCES "Merchant" ("id_merchant_category");
-
